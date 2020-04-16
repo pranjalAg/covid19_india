@@ -5,9 +5,9 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
-import 'package:flutter_circular_chart/flutter_circular_chart.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_echarts/flutter_echarts.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -43,30 +43,34 @@ class _MyHomePageState extends State<MyHomePage> {
   int deaths;
   int recovered;
   String lastupdated;
-  List test;
-  String mainnum;
-  String mainemail;
+  Map pastdata;
+  int _state = 0;
+  List pastlist;
+  List newpastList;
+  List sList;
+  String pastdaterange;
   Future getData() async {
      http.Response response = await http.get("https://api.rootnet.in/covid19-in/stats/latest");
      http.Response response2 = await http.get("http://pranjal-ag.herokuapp.com/apipast.php");
      http.Response responsenum = await http.get("https://api.rootnet.in/covid19-in/contacts");
 
-     test = json.decode(response2.body);
-//     var sList = List<double>.from(test);
+     pastdata = json.decode(response2.body);
+     pastlist = pastdata['list'];
+     newpastList = List<double>.from(pastlist);
 
      dataarr = json.decode(response.body);
      datacont = json.decode(responsenum.body);
      setState(() {
+       sList = newpastList;
+       pastdaterange = pastdata['dates'];
        userdata = dataarr["data"]["regional"];
        usercont = datacont["data"]["contacts"]["regional"];
        lastupdated = dataarr["lastRefreshed"];
        TotalCases = dataarr["data"]["summary"]["total"];
        deaths = dataarr["data"]["summary"]["deaths"];
        recovered = dataarr["data"]["summary"]["discharged"];
-       mainnum = datacont["data"]["contacts"]["primary"]["number-tollfree"];
-       mainemail = datacont["data"]["contacts"]["primary"]["email"];
+       _state = 1;
      });
-     debugPrint(usercont.toString());
   }
 
   @override
@@ -75,8 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     getData();
   }
-//  var sList = sList;
-  var data = [4789.00,5274.00,5865.00,6761.00,7529.00,8447.00,9352.00];
+  Color gradientStart = Colors.greenAccent; //Change start gradient color here
+  Color gradientEnd = Colors.redAccent; //Change end gradient color here
 
   Material mychart1Items(String title, String priceVal,String subtitle) {
     return Material(
@@ -115,11 +119,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       color: Colors.blueGrey,
                     ),),
                   ),
-
                   Padding(
                     padding: EdgeInsets.all(1.0),
                     child: new Sparkline(
-                      data: data,
+                      data: sList,
                       fillMode: FillMode.below,
                       fillGradient: new LinearGradient(
                           begin: Alignment.topCenter,
@@ -133,7 +136,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       pointColor: Colors.red,
                     ),
                   ),
-
                 ],
               ),
             ],
@@ -318,12 +320,181 @@ class _MyHomePageState extends State<MyHomePage> {
       shadowColor: Color(0x802196F3),
       child: Container(
         margin: EdgeInsets.fromLTRB(4.0, 16.0, 4.0, 16.0),
-        child: Text(
-          'DOs & DONTs',
-          style: TextStyle(
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-          ),
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(4.0),
+                  child: Text(
+                    'Dos & Donts',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              margin: EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage('images/dos1.png'),
+                        width: 100,
+                      ),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 6.0),
+                        margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 6.0),
+                        child: Text(
+                          'Keep hands clean',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Image(
+                        image: AssetImage('images/dos2.png'),
+                        width: 100,
+                      ),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 6.0),
+                        margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                        child: Text(
+                          'Cover while sneezing',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage('images/dos3.png'),
+                        width: 100,
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 6.0),
+                        padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 6.0),
+                        child: Text(
+                          'Cook your food',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Image(
+                        image: AssetImage('images/dos4.png'),
+                        width: 100,
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                        padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 6.0),
+                        child: Text(
+                          'Use Face Mask',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage('images/dont1.png'),
+                        width: 100,
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 6.0),
+                        padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 6.0),
+                        child: Text(
+                          'Avoid Touching\nyour Face',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Image(
+                        image: AssetImage('images/dont2.png'),
+                        width: 100,
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                        padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 6.0),
+                        child: Text(
+                          'Avoid contact \nwith sick people',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage('images/dont3.png'),
+                        width: 100,
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 6.0),
+                        padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 6.0),
+                        child: Text(
+                          'Avoid Travelling\n',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Image(
+                        image: AssetImage('images/dont4.png'),
+                        width: 100,
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                        padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 6.0),
+                        child: Text(
+                          'Avoid Crowds\n',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -428,7 +599,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     Expanded(
                         flex: 4,
                         child: Text(
-                            '$mainemail',
+                            'ncov2019@gov.in',
                             style: TextStyle(
                             fontSize: 16.0,
                           ),
@@ -451,7 +622,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     Expanded(
                         flex: 4,
                         child: Text(
-                            '$mainnum   (Toll-free)',
+                            '1075  (Toll-free)',
                             style: TextStyle(
                               fontSize: 16.0,
                             ),
@@ -467,6 +638,113 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Material majorsymp() {
+    return Material(
+      color: Colors.redAccent,
+      elevation: 14.0,
+      borderRadius: BorderRadius.circular(24.0),
+      shadowColor: Color(0x802196F3),
+      child: Container(
+        padding: EdgeInsets.fromLTRB(0.0,10.0,0.0,10.0),
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text(
+                    'Major Symptoms',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Image(
+                      image: AssetImage('images/sym1.png'),
+                      width: 96,
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 6.0),
+                      child: Text(
+                          'Fever',
+                          style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Image(
+                      image: AssetImage('images/sym2.png'),
+                      width: 96,
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 6.0),
+                      child: Text(
+                        'Runny Nose',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Image(
+                      image: AssetImage('images/sym3.png'),
+                      width: 96,
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 6.0),
+                      child: Text(
+                        'Cough',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Image(
+                      image: AssetImage('images/sym4.png'),
+                      width: 96,
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 6.0),
+                      child: Text(
+                        'Shortness of Breath',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -474,46 +752,54 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body:Container(
-        color:Color(0xffE5E5E5),
-        child:StaggeredGridView.count(
-          crossAxisCount: 4,
-          crossAxisSpacing: 6.0,
-          mainAxisSpacing: 4.0,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: mychart1Items("Past Week Stats","04/04 - 11/04",""),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: textStats(),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: listitems(),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: dosdonts(),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: statewisehelp(),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: nationalCont(),
-            ),
-          ],
-          staggeredTiles: [
-            StaggeredTile.extent(4, 250.0),
-            StaggeredTile.extent(4, 125.0),
-            StaggeredTile.extent(4, 375.0),
-            StaggeredTile.extent(4, 500.0),
-            StaggeredTile.extent(4, 375.0),
-            StaggeredTile.extent(4, 200.0),
-          ],
+      body: Center(
+        child: _state == 0 ? SpinKitFadingCube(color: Colors.redAccent,
+          size: 80.0,) : Container(
+          color:Color(0xffE5E5E5),
+          child:StaggeredGridView.count(
+            crossAxisCount: 4,
+            crossAxisSpacing: 6.0,
+            mainAxisSpacing: 4.0,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: mychart1Items("Past Week Stats","$pastdaterange",""),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: textStats(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: listitems(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: dosdonts(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: majorsymp(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: statewisehelp(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: nationalCont(),
+              ),
+            ],
+            staggeredTiles: [
+              StaggeredTile.extent(4, 250.0),
+              StaggeredTile.extent(4, 125.0),
+              StaggeredTile.extent(4, 375.0),
+              StaggeredTile.extent(4, 775.0),
+              StaggeredTile.extent(4, 350.0),
+              StaggeredTile.extent(4, 375.0),
+              StaggeredTile.extent(4, 200.0),
+            ],
+          ),
         ),
       ),
     );
