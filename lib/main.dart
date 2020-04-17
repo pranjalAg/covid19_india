@@ -6,7 +6,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_echarts/flutter_echarts.dart';
 
 void main() => runApp(MyApp());
 
@@ -119,6 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       color: Colors.blueGrey,
                     ),),
                   ),
+
                   Padding(
                     padding: EdgeInsets.all(1.0),
                     child: new Sparkline(
@@ -136,6 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       pointColor: Colors.red,
                     ),
                   ),
+
                 ],
               ),
             ],
@@ -156,6 +157,84 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ListView.builder(
             itemCount: userdata == null ? 0 : userdata.length,
             itemBuilder: (BuildContext context, int index) {
+              if (index == 0) {
+                // return the header
+                return new Column(
+                  children: <Widget>[
+                    Row(
+//                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                padding: const EdgeInsets.all(6.0),
+                                child: Text("States",
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                padding: const EdgeInsets.all(6.0),
+                                child: Text("Total",
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                padding: const EdgeInsets.all(6.0),
+                                child: Text("Deaths",
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                padding: const EdgeInsets.all(6.0),
+                                child: Text("Recovery",
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }
+              index -= 1;
               return Container(
 //              margin: EdgeInsets.all(6.0),
                 padding: EdgeInsets.fromLTRB(0.0,10.0,0.0,10.0),
@@ -163,7 +242,7 @@ class _MyHomePageState extends State<MyHomePage> {
 //                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Expanded(
-                      flex: 3,
+                      flex: 2,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -213,7 +292,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Column(
                         children: <Widget>[
                           Container(
@@ -511,6 +590,52 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ListView.builder(
           itemCount: usercont == null ? 0 : usercont.length,
           itemBuilder: (BuildContext context, int index) {
+            if (index == 0) {
+              // return the header
+              return new Column(
+                children: <Widget>[
+                  Row(
+//                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Text("State",
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Text("Contact Info",
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            }
+            index -= 1;
             return Container(
 //              margin: EdgeInsets.all(6.0),
               padding: EdgeInsets.fromLTRB(0.0,10.0,0.0,10.0),
@@ -763,7 +888,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: mychart1Items("Past Week Stats","$pastdaterange",""),
+                child: mychart1Items("Past Week Change","$pastdaterange",""),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
