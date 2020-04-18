@@ -55,10 +55,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
      pastdata = json.decode(response2.body);
      pastlist = pastdata['list'];
-     newpastList = List<double>.from(pastlist);
 
      dataarr = json.decode(response.body);
      datacont = json.decode(responsenum.body);
+     if(pastlist.last==0){
+       pastlist.last=dataarr["data"]["summary"]["total"].toDouble();
+     }
+     newpastList = List<double>.from(pastlist);
+
      setState(() {
        sList = newpastList;
        pastdaterange = pastdata['dates'];
